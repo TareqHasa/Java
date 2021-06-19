@@ -1,0 +1,22 @@
+@charset "ISO-8859-1";
+
+form {
+	display: flex;
+	flex-direction: column;
+	width: 30%;
+}
+
+.feild {
+	display: flex;
+	flex-direction: row;
+}
+
+.button {
+	width: 18%;
+	margin-left: 80%;
+	margin-top: 2%;
+}
+
+h1 {
+	text-decoration: underline;
+}
