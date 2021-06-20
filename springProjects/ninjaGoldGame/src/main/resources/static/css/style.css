@@ -1,0 +1,12 @@
+@charset "ISO-8859-1";
+.bulding{
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.bulding form{
+    border: 1px solid black;
+    width: 350px;
+    text-align: center;
+}
