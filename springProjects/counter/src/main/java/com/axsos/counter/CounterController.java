@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CounterController {
 	@RequestMapping("/")
-	public String home( HttpSession session) {
+	public String home(HttpSession session) {
 		if (session.getAttribute("counter") == null) {
 			session.setAttribute("counter", 0);
 		} else {
@@ -19,14 +19,13 @@ public class CounterController {
 
 		}
 
-
 		return "index.jsp";
 	}
-	
+
 	@RequestMapping("/counter")
-	public String counter(Model model,HttpSession session) {
+	public String counter(Model model, HttpSession session) {
 		model.addAttribute("count", session.getAttribute("counter"));
 		return "counter.jsp";
-		
+
 	}
 }
