@@ -13,13 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.axsos.login_registration.models.User;
 import com.axsos.login_registration.services.UserService;
+import com.axsos.login_registration.validator.UserValidator;
 
 @Controller
 public class UserController {
-	final private UserService userService;
+	 private final UserService userService;
+	 private final UserValidator userValidator;
 
-	public UserController(UserService userService) {
+
+
+	public UserController(UserService userService, UserValidator userValidator) {
 		this.userService = userService;
+		this.userValidator = userValidator;
 	}
 
 	@RequestMapping("/registration")
@@ -34,48 +39,49 @@ public class UserController {
 
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
 	public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, HttpSession session) {
+		userValidator.validate(user, result);
 		if (result.hasErrors()) {
 			return "users/registrationPage.jsp";
 		} else {
-			User u =userService.registerUser(user);
+			User u = userService.registerUser(user);
 			session.setAttribute("userId", u.getId());
 			return "redirect:/home";
 		}
 	}
-	
-    @RequestMapping(value="/login", method=RequestMethod.POST)
-    public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password, Model model, HttpSession session) {
-        // if the user is authenticated, save their user id in session
-    	boolean isAuth= userService.authenticateUser(email, password);
-    	if (isAuth) {
-    		User user =userService.findByEmail(email);
-    		session.setAttribute("userId", user.getId());
-			model.addAttribute("user",user);
+
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
+			HttpSession session) {
+		// if the user is authenticated, save their user id in session
+		boolean isAuth = userService.authenticateUser(email, password);
+		if (isAuth) {
+			User user = userService.findByEmail(email);
+			session.setAttribute("userId", user.getId());
+			model.addAttribute("user", user);
 			return "redirect:/home";
-		}else {
-			model.addAttribute("error","Invalid Credantials, please try again");
+		} else {
+			model.addAttribute("error", "Invalid Credantials, please try again");
 			return "users/loginPage.jsp";
 		}
-    	
-        // else, add error messages and return the login page
-    }
-    
-    @RequestMapping("/home")
-    public String home(HttpSession session, Model model) {
-        // get user from session, save them in the model and return the home page
 
-    	Long userId= (Long) session.getAttribute("userId");
-    	User u=userService.findUserById(userId);
-    	model.addAttribute("user",u);
-    	return"users/homePage.jsp";
-    	
-    }
-    
-    @RequestMapping("/logout")
-    public String logout(HttpSession session) {
-        // invalidate session
-    	session.invalidate();
-        // redirect to login page
-    	return "redirect:/login";
-    }
+	}
+
+	@RequestMapping("/home")
+	public String home(HttpSession session, Model model) {
+		// get user from session, save them in the model and return the home page
+
+		Long userId = (Long) session.getAttribute("userId");
+		User u = userService.findUserById(userId);
+		model.addAttribute("user", u);
+		return "users/homePage.jsp";
+
+	}
+
+	@RequestMapping("/logout")
+	public String logout(HttpSession session) {
+		// invalidate session
+		session.invalidate();
+		// redirect to login page
+		return "redirect:/login";
+	}
 }

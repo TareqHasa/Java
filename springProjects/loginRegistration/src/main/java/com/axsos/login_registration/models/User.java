@@ -1,5 +1,7 @@
 package com.axsos.login_registration.models;
 
+
+
 import java.util.Date;
 
 import javax.persistence.Column;
